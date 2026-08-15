@@ -4,7 +4,8 @@ const { getPool, sql } = require('../database/sqlServer');
 //   pedido            = tpedido.codigo_pedido (== tpresupuesto.codigo)
 //   cliente           = tClienteVarios.nombre, vía idClienteVarios (tpedido o tpresupuesto)
 //   poblacion         = tpoblacion.nombre, vía tClienteVarios.pobFiscal = tpoblacion.CP
-//   id (por módulo)   = tpresupuestoLineas.codigo  (NO idEscena)
+//   id (por módulo)   = tpresupuestoLineas.idEscena  (confirmado contra datos reales,
+//                        corrige una deducción anterior que usaba tpresupuestoLineas.codigo)
 //   descripcion       = primera línea de tpresupuestoLineas.descripcion
 //   medidaL/H/P       = tdespieceLineaPresupuesto.medida1/2/3, fila cuyo familia+articulo
 //                        coincide con el familia+articulo de la línea padre
@@ -41,7 +42,7 @@ async function buscarPedido(codigoPedido) {
         .input('codigoPresupuesto', sql.VarChar(25), header.codigoPresupuesto)
         .query(`
             SELECT
-                pl.codigo AS id,
+                pl.idEscena AS id,
                 pl.descripcion AS descripcion,
                 d.medida1 AS medidaL,
                 d.medida2 AS medidaH,
