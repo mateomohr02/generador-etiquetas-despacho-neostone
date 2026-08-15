@@ -1,0 +1,42 @@
+const pedidoService = require('../services/pedidoService');
+const etiquetaService = require('../services/etiquetaService');
+const printerService = require('../services/printerService');
+const etiquetaZpl = require('../zpl/etiquetaZpl');
+
+const CODIGO_PEDIDO_REGEX = /^[A-Za-z0-9-]{3,25}$/;
+
+async function previewEtiquetas(req, res) {
+    const codigoPedido = (req.params.codigoPedido || '').trim();
+
+    if (!CODIGO_PEDIDO_REGEX.test(codigoPedido)) {
+        return res.status(400).json({ error: 'Número de pedido inválido' });
+    }
+
+    try {
+        const pedido = await pedidoService.buscarPedido(codigoPedido);
+        if (!pedido) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        const etiquetas = etiquetaService.construirEtiquetasDePedido(pedido);
+        return res.json({ pedido: pedido.pedido, etiquetas });
+    } catch (error) {
+        console.error('Error generando preview de etiquetas:', error);
+        return res.status(500).json({ error: 'Error generando preview de etiquetas' });
+    }
+}
+
+// ETAPA 5: todavía no genera ZPL real ni imprime. Queda cableado para no romper la ruta.
+async function imprimirEtiqueta(req, res) {
+    try {
+        const zpl = etiquetaZpl.generarZPL(req.body);
+        await printerService.imprimir(zpl);
+        return res.json({ ok: true });
+    } catch (error) {
+        return res.status(501).json({ error: error.message });
+    }
+}
+
+module.exports = {
+    previewEtiquetas,
+    imprimirEtiqueta
+};

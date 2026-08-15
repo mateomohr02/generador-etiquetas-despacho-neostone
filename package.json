@@ -1,0 +1,21 @@
+{
+  "name": "generador-etiquetas-despacho-neostone",
+  "version": "0.1.0",
+  "description": "Generador e impresor de etiquetas de despacho (Zebra GK420t) para pedidos Teowin",
+  "private": true,
+  "main": "src/electron/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mssql": "^10.0.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}
