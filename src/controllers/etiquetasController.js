@@ -34,14 +34,14 @@ async function previewEtiquetas(req, res) {
     }
 }
 
-// ETAPA 5: todavía no genera ZPL real ni imprime. Queda cableado para no romper la ruta.
 async function imprimirEtiqueta(req, res) {
     try {
         const zpl = etiquetaZpl.generarZPL(req.body);
         await printerService.imprimir(zpl);
         return res.json({ ok: true });
     } catch (error) {
-        return res.status(501).json({ error: error.message });
+        console.error('Error imprimiendo etiqueta:', error);
+        return res.status(500).json({ error: error.message });
     }
 }
 

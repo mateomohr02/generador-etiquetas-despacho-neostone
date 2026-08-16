@@ -6,15 +6,21 @@ const btnBuscar = document.getElementById('btn-buscar');
 const mensajeError = document.getElementById('mensaje-error');
 
 const btnVolver = document.getElementById('btn-volver');
+const btnImprimirTodas = document.getElementById('btn-imprimir-todas');
 const previewTitulo = document.getElementById('preview-titulo');
 const mensajeErrorPreview = document.getElementById('mensaje-error-preview');
+const mensajeImprimirTodas = document.getElementById('mensaje-imprimir-todas');
 const listaEtiquetas = document.getElementById('lista-etiquetas');
+
+let etiquetasRenderizadas = [];
 
 function mostrarBusqueda() {
     pantallaPreview.classList.add('oculto');
     pantallaBusqueda.classList.remove('oculto');
     listaEtiquetas.innerHTML = '';
     mensajeErrorPreview.textContent = '';
+    mensajeImprimirTodas.textContent = '';
+    etiquetasRenderizadas = [];
 }
 
 function mostrarPreview(pedido, etiquetas) {
@@ -26,6 +32,7 @@ function mostrarPreview(pedido, etiquetas) {
 
 function renderEtiquetas(etiquetas) {
     listaEtiquetas.innerHTML = '';
+    etiquetasRenderizadas = [];
 
     etiquetas.forEach((etiqueta) => {
         const wrapper = document.createElement('div');
@@ -70,7 +77,29 @@ function renderEtiquetas(etiquetas) {
         wrapper.appendChild(acciones);
         wrapper.appendChild(mensajeImprimir);
         listaEtiquetas.appendChild(wrapper);
+
+        etiquetasRenderizadas.push({ etiqueta, mensajeEl: mensajeImprimir });
     });
+}
+
+async function imprimirTodas() {
+    if (etiquetasRenderizadas.length === 0) {
+        return;
+    }
+
+    btnImprimirTodas.disabled = true;
+    mensajeImprimirTodas.textContent = `Imprimiendo 0/${etiquetasRenderizadas.length}...`;
+
+    let exitosas = 0;
+    for (let i = 0; i < etiquetasRenderizadas.length; i++) {
+        const { etiqueta, mensajeEl } = etiquetasRenderizadas[i];
+        const ok = await imprimirEtiqueta(etiqueta, mensajeEl);
+        if (ok) exitosas++;
+        mensajeImprimirTodas.textContent = `Imprimiendo ${i + 1}/${etiquetasRenderizadas.length}...`;
+    }
+
+    mensajeImprimirTodas.textContent = `Impresas ${exitosas}/${etiquetasRenderizadas.length}.`;
+    btnImprimirTodas.disabled = false;
 }
 
 // La impresión real (ZPL + Zebra por USB) se implementa en la Etapa 5.
@@ -85,9 +114,11 @@ async function imprimirEtiqueta(etiqueta, mensajeEl) {
         });
         const data = await response.json();
         mensajeEl.textContent = response.ok ? 'Impreso.' : (data.error || 'No se pudo imprimir.');
+        return response.ok;
     } catch (error) {
         mensajeEl.textContent = 'No se pudo conectar con la API interna.';
         console.error(error);
+        return false;
     }
 }
 
@@ -123,3 +154,4 @@ inputPedido.addEventListener('keydown', (event) => {
     }
 });
 btnVolver.addEventListener('click', mostrarBusqueda);
+btnImprimirTodas.addEventListener('click', imprimirTodas);
