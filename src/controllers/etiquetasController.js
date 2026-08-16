@@ -3,13 +3,12 @@ const etiquetaService = require('../services/etiquetaService');
 const qrPreviewService = require('../services/qrPreviewService');
 const printerService = require('../services/printerService');
 const etiquetaZpl = require('../zpl/etiquetaZpl');
-
-const CODIGO_PEDIDO_REGEX = /^[A-Za-z0-9-]{3,25}$/;
+const { esCodigoPedidoValido } = require('./validators');
 
 async function previewEtiquetas(req, res) {
     const codigoPedido = (req.params.codigoPedido || '').trim();
 
-    if (!CODIGO_PEDIDO_REGEX.test(codigoPedido)) {
+    if (!esCodigoPedidoValido(codigoPedido)) {
         return res.status(400).json({ error: 'Número de pedido inválido' });
     }
 

@@ -1,11 +1,10 @@
 const pedidoService = require('../services/pedidoService');
-
-const CODIGO_PEDIDO_REGEX = /^[A-Za-z0-9-]{3,25}$/;
+const { esCodigoPedidoValido } = require('./validators');
 
 async function buscarPedido(req, res) {
     const codigoPedido = (req.params.codigoPedido || '').trim();
 
-    if (!CODIGO_PEDIDO_REGEX.test(codigoPedido)) {
+    if (!esCodigoPedidoValido(codigoPedido)) {
         return res.status(400).json({ error: 'Número de pedido inválido' });
     }
 
