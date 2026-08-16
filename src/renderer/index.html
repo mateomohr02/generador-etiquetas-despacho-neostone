@@ -12,8 +12,16 @@
         <input id="input-pedido" type="text" placeholder="Ej: 26-02464" autofocus />
         <button id="btn-buscar">Buscar pedido</button>
         <p id="mensaje-error" class="error"></p>
-        <pre id="resultado-debug" class="debug"></pre>
     </main>
+
+    <section id="pantalla-preview" class="pantalla-preview oculto">
+        <div class="preview-header">
+            <button id="btn-volver">← Volver a la búsqueda</button>
+            <h2 id="preview-titulo"></h2>
+        </div>
+        <p id="mensaje-error-preview" class="error"></p>
+        <div id="lista-etiquetas" class="lista-etiquetas"></div>
+    </section>
 
     <script src="renderer.js"></script>
 </body>

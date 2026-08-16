@@ -5,6 +5,16 @@ function formatMedida(valor) {
     return Number(valor).toFixed(2).replace('.', ',');
 }
 
+// Formato solo visual para el preview (con separador de miles, ej: "2.040,00").
+// El contenido del QR usa formatMedida (sin separador de miles) para no alterar
+// el formato ya validado contra el ejemplo original.
+function formatMedidaDisplay(valor) {
+    return Number(valor).toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
 function construirQrContenido({ pedido, id, cliente, poblacion, descripcion, medidaL, medidaH, medidaP }) {
     return [
         'NEO1',
@@ -37,6 +47,9 @@ function construirEtiquetasDePedido(pedidoData) {
         };
         return {
             ...datos,
+            medidaLDisplay: formatMedidaDisplay(modulo.medidaL),
+            medidaHDisplay: formatMedidaDisplay(modulo.medidaH),
+            medidaPDisplay: formatMedidaDisplay(modulo.medidaP),
             qrContenido: construirQrContenido(datos)
         };
     });

@@ -1,5 +1,6 @@
 const pedidoService = require('../services/pedidoService');
 const etiquetaService = require('../services/etiquetaService');
+const qrPreviewService = require('../services/qrPreviewService');
 const printerService = require('../services/printerService');
 const etiquetaZpl = require('../zpl/etiquetaZpl');
 
@@ -18,7 +19,15 @@ async function previewEtiquetas(req, res) {
             return res.status(404).json({ error: 'Pedido no encontrado' });
         }
         const etiquetas = etiquetaService.construirEtiquetasDePedido(pedido);
-        return res.json({ pedido: pedido.pedido, etiquetas });
+
+        const etiquetasConQr = await Promise.all(
+            etiquetas.map(async (etiqueta) => ({
+                ...etiqueta,
+                qrImageDataUrl: await qrPreviewService.generarQrDataUrl(etiqueta.qrContenido)
+            }))
+        );
+
+        return res.json({ pedido: pedido.pedido, etiquetas: etiquetasConQr });
     } catch (error) {
         console.error('Error generando preview de etiquetas:', error);
         return res.status(500).json({ error: 'Error generando preview de etiquetas' });
