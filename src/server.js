@@ -1,4 +1,16 @@
-require('dotenv').config();
+// En dev (npm start) el .env se lee del root del proyecto como siempre.
+// Empaquetado (carpeta portable generada con electron-packager), se lee de
+// la carpeta donde está el .exe, así queda editable ahí sin recompilar la app.
+const path = require('path');
+let envPath;
+try {
+    if (require('electron').app.isPackaged) {
+        envPath = path.join(path.dirname(process.execPath), '.env');
+    }
+} catch (_) {
+    // No corre dentro de Electron (ej: tests) -> usa el .env del cwd.
+}
+require('dotenv').config(envPath ? { path: envPath } : undefined);
 
 const express = require('express');
 const cors = require('cors');

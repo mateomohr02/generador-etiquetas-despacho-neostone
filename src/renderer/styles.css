@@ -104,10 +104,10 @@ button:disabled {
     gap: 20px;
 }
 
-/* Etiqueta física: 10,80cm x 7,00cm, tamaño real de la Zebra GK420t */
+/* Etiqueta física: 9,80cm x 5,90cm, tamaño real usado en etiquetaZpl.js */
 .etiqueta-card {
-    width: 108mm;
-    height: 70mm;
+    width: 98mm;
+    height: 59mm;
     background: #fff;
     border: 1px solid #999;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -127,7 +127,7 @@ button:disabled {
 
 .etiqueta-contador {
     position: absolute;
-    top: 3mm;
+    top: 4mm;
     right: 4mm;
     font-weight: bold;
     font-size: 3.6mm;
@@ -169,7 +169,7 @@ button:disabled {
     margin-top: 2.5mm;
     font-size: 3.3mm;
     line-height: 1.2;
-    padding-right: 23mm;
+    padding-right: 26mm;
 }
 
 .etiqueta-accesorios {
@@ -191,8 +191,8 @@ button:disabled {
 
 .etiqueta-qr {
     position: absolute;
-    bottom: 3mm;
-    right: 3mm;
+    bottom: 9mm;
+    right: 9mm;
     width: 19mm;
     height: 19mm;
 }
@@ -204,7 +204,7 @@ button:disabled {
 }
 
 .etiqueta-acciones {
-    width: 108mm;
+    width: 98mm;
     display: flex;
     justify-content: center;
     gap: 12px;

@@ -1,4 +1,4 @@
-// Genera el ZPL final para la Zebra GK420t (203dpi, 10,80x7,00cm, ^BQN para el QR).
+// Genera el ZPL final para la Zebra GK420t (203dpi, 9,80x5,90cm, ^BQN para el QR).
 //
 // IMPORTANTE: estas coordenadas y tamaños se calcularon matemáticamente a partir de las
 // especificaciones dadas (mm -> dots a 203dpi) y del layout ya validado en el preview HTML,
@@ -10,8 +10,8 @@ const DPI = 203;
 const MM_PER_INCH = 25.4;
 const DOTS_PER_MM = DPI / MM_PER_INCH;
 
-const LABEL_WIDTH_MM = 108;
-const LABEL_HEIGHT_MM = 70;
+const LABEL_WIDTH_MM = 98;
+const LABEL_HEIGHT_MM = 59;
 const MARGIN_MM = 4; // > 0,20cm de margen no imprimible del fabricante, ya lo cubre
 const PRINT_SPEED_IPS = 5; // 12,7 cm/s == 5 in/s exacto
 const DARKNESS = 1; // TODO: verificar/ajustar contra la impresora real
@@ -42,8 +42,8 @@ function generarZPL(etiqueta) {
     const medidas = `L  ${etiqueta.medidaLDisplay}   H  ${etiqueta.medidaHDisplay}   P  ${etiqueta.medidaPDisplay}`;
 
     const qrBoxDots = mm(QR_BOX_MM);
-    const qrX = anchoDots - margen - qrBoxDots;
-    const qrY = altoDots - margen - qrBoxDots;
+    const qrX = anchoDots - margen - qrBoxDots - mm(5);
+    const qrY = altoDots - margen - qrBoxDots - mm(5);
     const anchoMedidas = qrX - margen - mm(2);
 
     return [
@@ -69,8 +69,10 @@ function generarZPL(etiqueta) {
         `^FO${margen},${margen + mm(13)}^A0N,${mm(3)},${mm(3)}^FDN. DE PEDIDO:^FS`,
         `^FO${margen + mm(30)},${margen + mm(12)}^A0N,${mm(5)},${mm(5)}^FD${pedido}^FS`,
 
-        // Descripcion (hasta 2 lineas), dejando lugar a "Accesorios" a la derecha
-        `^FO${margen},${margen + mm(20)}^A0N,${mm(3.3)},${mm(3.3)}^FB${anchoContenido - mm(23)},2,2,L^FD${descripcion}^FS`,
+        // Descripcion (hasta 3 lineas), dejando lugar a "Accesorios" a la derecha.
+        // Antes eran 2 lineas y un texto largo desbordaba pisando la linea de arriba;
+        // con 3 lineas y un poco menos de ancho entra completo sin superponerse.
+        `^FO${margen},${margen + mm(20)}^A0N,${mm(3.3)},${mm(3.3)}^FB${anchoContenido - mm(26)},3,2,L^FD${descripcion}^FS`,
 
         // "Accesorios": texto fijo de plantilla, no viene de la base de datos
         `^FO${anchoDots - margen - mm(19)},${margen + mm(20)}^A0N,${mm(3)},${mm(3)}^FB${mm(19)},1,0,L^FDAccesorios^FS`,
